@@ -1,0 +1,5 @@
+Basal Metabolic Rate (BMR) - The Amount of energy expended per day. The Amount of energy 
+  you would burn if you reseted in bed all day.
+
+  Synonomous Terms: Resting Metabolic Rate (RMR) and Resting Energy Expediture (REE)
+
