@@ -10,7 +10,7 @@ export const Container = styled.div`
   height: 100vh;
 `;
 
-export const Form = styled.form`
+export const BodyMetrics = styled.form`
   h1 {
     font-size: 2rem;
     font-weight: bold;
@@ -49,7 +49,7 @@ export const RadioGroup = styled.div`
   }
 `;
 
-export const TextInput = styled.div`
+export const InputContainer = styled.div`
   input,
   label {
     margin-right: 5px;

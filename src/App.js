@@ -1,13 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  Container,
-  Form,
-  RadioGroup,
-  TextInput
-} from './styled-components/App-Styles';
-import Formula from './components/Formula';
+import { Container, BodyMetrics, RadioGroup, InputContainer } from './styled-components/App-Styles';
+import Formulas from './components/Formula';
 
-const defaultFormState = {
+const defaultBodyMetrics = {
   sex: 'male',
   weight: '',
   feet: '',
@@ -19,12 +14,24 @@ const defaultFormState = {
 };
 
 function App() {
-  const [form, setForm] = useState(defaultFormState);
+  /********************************************************
+   *                   STATE VARIABLES                    *
+   ********************************************************/
+  const [bodyMetrics, setBodyMetrics] = useState(defaultBodyMetrics);
+  // REE = Resting Energy Expediture
   const [ree, setREE] = useState(0);
+  // TDEE = Total Daily Eneergy Expenditure
   const [tdee, setTDEE] = useState(0);
+  // Expenditure Variance - fancy name for how much you add or subtract from your daily
+  // caloric budget depending on your weight loss/gain goals
   const [expenditureVariance, setExpenditureVariance] = useState(0);
   const [caloricBudget, setCaloricBudget] = useState(0);
 
+  /********************************************************
+   *                         REFS                         *
+   ********************************************************/
+  // Refs below will point to DOM elements, used right now for resetting body metrics
+  // They get assigned DOM elements in the JSX in the return statement
   const radioMale = useRef(null);
   const radioFemale = useRef(null);
   const radioActivityFactor1 = useRef(null);
@@ -36,23 +43,84 @@ function App() {
   const maintainGoal = useRef(null);
   const gainGoal = useRef(null);
 
+  /********************************************************
+   *                     SIDE-EFFECTS                     *
+   ********************************************************/
+  // Calculates REE (Resting Energy Expenditure)
+  useEffect(() => {
+    let { sex, weight, feet, inches, age } = bodyMetrics;
+
+    if (sex && weight && feet && inches && age) {
+      // Below is the Mifflin-St. Jeor calculation
+      setREE(
+        (
+          10 * toKG(weight) +
+          6.25 * toCM(feet, inches) -
+          5 * age +
+          (sex === 'male' ? 5 : -161)
+        ).toFixed(0)
+      );
+    } else {
+      // resets REE and TDEE if any of the dependent body metric fields are erased
+      setREE(0);
+      setTDEE(0);
+    }
+  }, [bodyMetrics, ree, tdee, expenditureVariance]);
+
+  // Calculates TDEE (Total Daily Energy Expenditure)
+  useEffect(() => {
+    if (bodyMetrics.activityFactor) {
+      setTDEE((ree * bodyMetrics.activityFactor).toFixed(0));
+    }
+  }, [bodyMetrics, ree]);
+
+  // Calculats Daily Caloric Budget
+  useEffect(() => {
+    let { activityFactor, weeklyGoal, weeklyPounds } = bodyMetrics;
+    if (activityFactor && tdee && weeklyGoal && weeklyPounds) {
+      // calculates how many calories to subtract from daily caloric budget
+      // based on how many pounds the user wants to lose a week
+      setExpenditureVariance((weeklyPounds * 3500) / 7);
+
+      switch (weeklyGoal) {
+        case 'lose':
+          setCaloricBudget(tdee - expenditureVariance);
+          break;
+        case 'maintain':
+          setExpenditureVariance(0);
+          setCaloricBudget(tdee);
+          break;
+        default:
+          // 'gain'
+          // need to type-caste here, input fields return back strings...
+          setCaloricBudget(Number(tdee) + Number(expenditureVariance));
+          break;
+      }
+    }
+  }, [bodyMetrics, expenditureVariance, tdee]);
+
+  // Runs once, only on initial render, and just sets default selections for two radio buttons
+  useEffect(() => {
+    radioMale.current.checked = true;
+    maintainGoal.current.checked = true;
+  }, []);
+
+  /********************************************************
+   *                       FUNCTIONS                      *
+   ********************************************************/
   const handleChange = e => {
-    setForm({
-      ...form,
+    setBodyMetrics({
+      ...bodyMetrics,
       [e.target.name]: e.target.value
     });
   };
 
-  const toCM = (feet, inches) => {
-    return Math.floor(feet * 30.48 + inches * 2.54);
-  };
+  // Functions to convert imperial to metric
+  const toCM = (feet, inches) => Math.floor(feet * 30.48 + inches * 2.54);
+  const toKG = lbs => Math.floor(lbs / 2.205);
 
-  const toKG = lbs => {
-    return Math.floor(lbs / 2.205);
-  };
-
-  const reset = () => {
-    setForm(defaultFormState);
+  const resetBodyMetrics = () => {
+    setBodyMetrics(defaultBodyMetrics);
     setExpenditureVariance(0);
     setCaloricBudget(0);
     radioMale.current.checked = true;
@@ -67,127 +135,68 @@ function App() {
     gainGoal.current.checked = false;
   };
 
-  useEffect(() => {
-    let {
-      sex,
-      weight,
-      feet,
-      inches,
-      age,
-      activityFactor,
-      weeklyGoal,
-      weeklyPounds
-    } = form;
-
-    if (sex && weight && feet && inches && age) {
-      setREE(
-        (
-          10 * toKG(weight) +
-          6.25 * toCM(feet, inches) -
-          5 * age +
-          (sex === 'male' ? 5 : -161)
-        ).toFixed(0)
-      );
-
-      if (activityFactor) {
-        setTDEE((ree * activityFactor).toFixed(0));
-      }
-
-      if (activityFactor && tdee && weeklyGoal && weeklyPounds) {
-        setExpenditureVariance((weeklyPounds * 3500) / 7);
-
-        if (weeklyGoal === 'lose') {
-          setCaloricBudget(tdee - expenditureVariance);
-        } else if (weeklyGoal === 'maintain') {
-          setExpenditureVariance(0);
-          setCaloricBudget(tdee);
-        } else {
-          setCaloricBudget(Number(tdee) + Number(expenditureVariance));
-        }
-      }
-    } else {
-      setREE(0);
-      setTDEE(0);
-    }
-  }, [form, ree, tdee, expenditureVariance]);
-
-  useEffect(() => {
-    radioMale.current.checked = true;
-    maintainGoal.current.checked = true;
-  }, []);
-
   return (
     <Container>
-      <Form>
+      <BodyMetrics>
         <h1>Body/Activity Metrics:</h1>
+        {/* INPUTS FOR REE (RESTING ENERGY EXPENDITURE) */}
         <RadioGroup>
           <label>Sex:</label>
-          <input
-            type='radio'
-            name='sex'
-            value='male'
-            onChange={handleChange}
-            ref={radioMale}
-          />
+          <input type='radio' name='sex' value='male' onChange={handleChange} ref={radioMale} />
           <label>Male</label>
-          <input
-            type='radio'
-            name='sex'
-            value='female'
-            onChange={handleChange}
-            ref={radioFemale}
-          />
+          <input type='radio' name='sex' value='female' onChange={handleChange} ref={radioFemale} />
           <label>Female</label>
         </RadioGroup>
 
-        <TextInput>
+        <InputContainer>
           <label>Weight:</label>
           <input
             type='number'
             name='weight'
-            value={form.weight}
+            value={bodyMetrics.weight}
             placeholder='lbs.'
             onChange={handleChange}
           />
-          <span>{form.weight ? `${toKG(form.weight)} kg` : ''}</span>
-        </TextInput>
+          <span>{bodyMetrics.weight ? `${toKG(bodyMetrics.weight)} kg` : ''}</span>
+        </InputContainer>
 
-        <TextInput>
+        <InputContainer>
           <label>Height:</label>
           <input
             type='number'
             name='feet'
-            value={form.feet}
+            value={bodyMetrics.feet}
             placeholder='ft.'
             onChange={handleChange}
           />
           <input
             type='number'
             name='inches'
-            value={form.inches}
+            value={bodyMetrics.inches}
             placeholder='in.'
             onChange={handleChange}
             min={0}
             max={11}
           />
           <span>
-            {form.feet && form.inches
-              ? `${toCM(form.feet, form.inches)} cm`
+            {bodyMetrics.feet && bodyMetrics.inches
+              ? `${toCM(bodyMetrics.feet, bodyMetrics.inches)} cm`
               : ''}
           </span>
-        </TextInput>
+        </InputContainer>
 
-        <TextInput>
+        <InputContainer>
           <label>Age (yrs):</label>
           <input
             type='number'
             name='age'
-            value={form.age}
+            value={bodyMetrics.age}
             placeholder='Age'
             onChange={handleChange}
           />
-        </TextInput>
+        </InputContainer>
 
+        {/* INPUT FOR TDEE (TOTAL DAILY ENERGY EXPENDITURE) */}
         <RadioGroup>
           <label>Activity Level:</label>
           <input
@@ -231,6 +240,8 @@ function App() {
           />
           <label>Extra</label>
         </RadioGroup>
+
+        {/* INPUTS FOR DAILY CALORIC GOALS */}
         <RadioGroup>
           <label>Weekly Goal:</label>
           <input
@@ -260,7 +271,7 @@ function App() {
           <input
             type='number'
             name='weeklyPounds'
-            value={form.weeklyPounds}
+            value={bodyMetrics.weeklyPounds}
             min={0}
             max={2}
             step={0.5}
@@ -269,15 +280,17 @@ function App() {
           />
           <label>lbs.</label>
         </RadioGroup>
-        <button type='button' onClick={reset}>
+        {/* RESET BUTTON */}
+        <button type='button' onClick={resetBodyMetrics}>
           Reset
         </button>
-      </Form>
-      <Formula
-        form={form}
+      </BodyMetrics>
+
+      <Formulas
+        bodyMetrics={bodyMetrics}
         ree={ree}
         tdee={tdee}
-        weeklyGoal={form.weeklyGoal}
+        weeklyGoal={bodyMetrics.weeklyGoal}
         expenditureVariance={expenditureVariance}
         caloricBudget={caloricBudget}
       />
