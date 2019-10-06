@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useReducer } from 'react';
 import {
   Container,
   Form,
   RadioGroup,
-  TextInput,
-  FormulaContainer
+  TextInput
 } from './styled-components/App-Styles';
+import Formula from './components/Formula';
 
 const defaultFormState = {
   sex: 'male',
@@ -36,7 +36,7 @@ function App() {
     });
   };
 
-  console.log(form);
+  // console.log(form);
 
   const toCM = (feet, inches) => {
     return Math.floor(feet * 30.48 + inches * 2.54);
@@ -48,7 +48,7 @@ function App() {
 
   const reset = () => {
     setForm(defaultFormState);
-    radioMale.current.checked = false;
+    radioMale.current.checked = true;
     radioFemale.current.checked = false;
     radioActivityFactor1.current.checked = false;
     radioActivityFactor2.current.checked = false;
@@ -77,20 +77,30 @@ function App() {
     }
   }, [form, ree]);
 
+  useEffect(() => {
+    radioMale.current.checked = true;
+  }, []);
+
   return (
     <Container>
       <Form>
         <h1>Body/Activity Metrics:</h1>
         <RadioGroup>
           <label>Sex:</label>
-          <input type='radio' name='sex' value='male' onChange={handleChange} />
+          <input
+            type='radio'
+            name='sex'
+            value='male'
+            onChange={handleChange}
+            ref={radioMale}
+          />
           <label>Male</label>
           <input
             type='radio'
             name='sex'
             value='female'
-            onInput={handleChange}
-            ref={radioMale}
+            onChange={handleChange}
+            ref={radioFemale}
           />
           <label>Female</label>
         </RadioGroup>
@@ -103,7 +113,6 @@ function App() {
             value={form.weight}
             placeholder='lbs.'
             onChange={handleChange}
-            ref={radioFemale}
           />
           <span>{form.weight ? `${toKG(form.weight)} kg` : ''}</span>
         </TextInput>
@@ -191,32 +200,7 @@ function App() {
           Reset
         </button>
       </Form>
-      <FormulaContainer>
-        <h1>Resting Energy Expendeture (REE) = {ree} cal</h1>
-        <p>
-          <span>REE</span> = 10 x{' '}
-          <span>{form.weight === '' ? 'weight' : toKG(form.weight)}(kg)</span> +
-          6.25 x{' '}
-          <span>
-            {form.feet === '' || form.inches === ''
-              ? 'height'
-              : toCM(form.feet, form.inches)}
-            (cm)
-          </span>{' '}
-          - 5 x <span>{form.age === '' ? 'age' : form.age}(yrs) </span>
-          {form.sex === 'male' ? '+ 5' : '- 161'} = <span>{ree}cal</span>
-        </p>
-        <h1>Total Daily Energy Expendeture (TDEE) = {tdee} cal</h1>
-        <p>
-          <span>TDEE </span> = <span>{ree === 0 ? 'REE' : `${ree} cal`}</span> x{' '}
-          <span>
-            {form.activityFactor === ''
-              ? 'Activity Factor'
-              : form.activityFactor}
-          </span>{' '}
-          = <span>{tdee}cal</span>
-        </p>
-      </FormulaContainer>
+      <Formula form={form} ree={ree} tdee={tdee} />
     </Container>
   );
 }
