@@ -172,7 +172,7 @@ function App() {
             placeholder='in.'
             onChange={handleChange}
             min={0}
-            max={12}
+            max={11}
           />
           <span>
             {form.feet && form.inches
