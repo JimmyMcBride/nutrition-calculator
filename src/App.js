@@ -43,8 +43,6 @@ function App() {
     });
   };
 
-  console.log(form);
-
   const toCM = (feet, inches) => {
     return Math.floor(feet * 30.48 + inches * 2.54);
   };
@@ -97,8 +95,6 @@ function App() {
 
       if (activityFactor && tdee && weeklyGoal && weeklyPounds) {
         setExpenditureVariance((weeklyPounds * 3500) / 7);
-        console.log('tdee', tdee);
-        console.log('expeditureVariance', expenditureVariance);
 
         if (weeklyGoal === 'lose') {
           setCaloricBudget(tdee - expenditureVariance);

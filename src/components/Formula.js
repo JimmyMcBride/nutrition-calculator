@@ -51,11 +51,6 @@ const Formula = ({
           : weeklyGoal === 'maintain'
           ? ''
           : `+ ${expenditureVariance}`}{' '}
-        {/* <span>
-          {expenditureVariance === 0
-            ? 'Expenditure Variance'
-            : expenditureVariance}
-        </span>{' '} */}
         <span>{caloricBudget === 0 ? '' : ` = ${caloricBudget} cal`}</span>
       </p>
     </FormulaContainer>
