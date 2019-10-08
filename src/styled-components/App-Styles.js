@@ -22,7 +22,6 @@ export const BodyMetrics = styled.form`
   flex-direction: column;
 
   width: 500px;
-  height: 244px;
 
   border: 1px solid black;
   padding: 10px;
@@ -66,7 +65,6 @@ export const FormulaContainer = styled.div`
   flex-direction: column;
 
   width: 500px;
-  height: 244px;
 
   border: 1px solid black;
   padding: 10px;
