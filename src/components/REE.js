@@ -1,11 +1,17 @@
 import React from 'react';
+import { FormulaCard } from '../styled-components/App-Styles';
+// import styled from 'styled-components';
+
+// const Span = styled.span`
+//   display: none;
+// `;
 
 const REE = ({ bodyMetrics, ree }) => {
   const toCM = (feet, inches) => Math.floor(feet * 30.48 + inches * 2.54);
   const toKG = lbs => Math.floor(lbs / 2.205);
 
   return (
-    <>
+    <FormulaCard>
       <h1>REE (Resting Energy Expendeture) = {ree} cal</h1>
       <p>
         <span>REE</span> = 10 x{' '}
@@ -20,7 +26,7 @@ const REE = ({ bodyMetrics, ree }) => {
         {bodyMetrics.sex === 'male' ? '+ 5' : '- 161'}
         <span>{ree === 0 ? '' : ` = ${ree} cal`}</span>
       </p>
-    </>
+    </FormulaCard>
   );
 };
 

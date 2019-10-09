@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormulaCard } from '../styled-components/App-Styles';
 
 const BMI = ({ bodyMetrics, bmi }) => {
   const toCM = (feet, inches) =>
@@ -6,7 +7,7 @@ const BMI = ({ bodyMetrics, bmi }) => {
   const toKG = lbs => Math.floor(lbs / 2.205);
 
   return (
-    <>
+    <FormulaCard>
       <h1>BMI (Body Mass Index) = {bmi} kg/m^2</h1>
       <p>
         <span>BMI</span> ={' '}
@@ -26,7 +27,7 @@ const BMI = ({ bodyMetrics, bmi }) => {
         </span>
         <span>{bmi === 0 ? '' : ` = ${bmi} kg/m^2`}</span>
       </p>
-    </>
+    </FormulaCard>
   );
 };
 

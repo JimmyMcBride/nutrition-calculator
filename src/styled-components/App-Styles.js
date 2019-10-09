@@ -1,16 +1,19 @@
 import styled from 'styled-components';
+import Paper from '@material-ui/core/Paper';
 
-export const Container = styled.div`
+import { Input, Button } from 'reactstrap'
+
+export const Container = styled(Paper)`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 
-  width: 100%;
-  height: 100vh;
+  width: 100vw;
+  // height: 100vh;
 `;
 
-export const BodyMetrics = styled.form`
+export const BodyMetrics = styled(Paper)`
   h1 {
     font-size: 2rem;
     font-weight: bold;
@@ -23,7 +26,7 @@ export const BodyMetrics = styled.form`
 
   width: 500px;
 
-  border: 1px solid black;
+  // border: 1px solid black;
   padding: 10px;
 
   font-size: 1.6rem;
@@ -60,13 +63,13 @@ export const InputContainer = styled.div`
   }
 `;
 
-export const FormulaContainer = styled.div`
+export const FormulaContainer = styled(Paper)`
   display: flex;
   flex-direction: column;
 
   width: 500px;
 
-  border: 1px solid black;
+  // border: 1px solid black;
   padding: 10px;
 
   h1 {
@@ -76,6 +79,7 @@ export const FormulaContainer = styled.div`
   }
 
   p {
+    display: none;
     font-size: 1.6rem;
     font-weight: lighter;
     font-style: italic;
@@ -86,4 +90,19 @@ export const FormulaContainer = styled.div`
   span {
     font-weight: bold;
   }
+`;
+
+export const FormulaCard = styled(Paper)`
+  margin: 1rem 0;
+  padding: .5rem;
+`;
+
+export const FormInput = styled(Input)`
+  border-radius: .3rem;
+  height: 2.2rem;
+`;
+
+export const FormButton = styled(Button)`
+  border-radius: .3rem;
+  height: 2.2rem;
 `;

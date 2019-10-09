@@ -3,19 +3,23 @@ import {
   Container,
   BodyMetrics,
   RadioGroup,
-  InputContainer
+  InputContainer,
+  FormInput,
+  FormButton,
 } from './styled-components/App-Styles';
 import Formulas from './components/Formula';
 
+// import Input from 'reactstrap';
+
 const defaultBodyMetrics = {
   sex: 'male',
-  weight: '',
-  feet: '',
-  inches: '',
-  age: '',
+  weight: '140',
+  feet: '5',
+  inches: '5',
+  age: '25',
   activityFactor: '',
   weeklyGoal: 'maintain',
-  weeklyPounds: ''
+  weeklyPounds: '1'
 };
 
 function App() {
@@ -204,7 +208,7 @@ function App() {
         {/* INPUTS FOR REE (RESTING ENERGY EXPENDITURE) */}
         <RadioGroup>
           <label>Sex:</label>
-          <input
+          <FormInput
             type='radio'
             name='sex'
             value='male'
@@ -212,7 +216,7 @@ function App() {
             ref={radioMale}
           />
           <label>Male</label>
-          <input
+          <FormInput
             type='radio'
             name='sex'
             value='female'
@@ -224,7 +228,7 @@ function App() {
 
         <InputContainer>
           <label>Weight:</label>
-          <input
+          <FormInput
             type='number'
             name='weight'
             value={bodyMetrics.weight}
@@ -240,14 +244,14 @@ function App() {
 
         <InputContainer>
           <label>Height:</label>
-          <input
+          <FormInput
             type='number'
             name='feet'
             value={bodyMetrics.feet}
             placeholder='ft.'
             onChange={handleChange}
           />
-          <input
+          <FormInput
             type='number'
             name='inches'
             value={bodyMetrics.inches}
@@ -268,7 +272,7 @@ function App() {
 
         <InputContainer>
           <label>Age (yrs):</label>
-          <input
+          <FormInput
             type='number'
             name='age'
             value={bodyMetrics.age}
@@ -280,7 +284,7 @@ function App() {
         {/* INPUT FOR TDEE (TOTAL DAILY ENERGY EXPENDITURE) */}
         <RadioGroup>
           <label>Activity Level:</label>
-          <input
+          <FormInput
             type='radio'
             name='activityFactor'
             value={1.2}
@@ -288,7 +292,7 @@ function App() {
             ref={radioActivityFactor1}
           />
           <label>Sedentary</label>
-          <input
+          <FormInput
             type='radio'
             name='activityFactor'
             value={1.375}
@@ -296,7 +300,7 @@ function App() {
             ref={radioActivityFactor2}
           />
           <label>Light</label>
-          <input
+          <FormInput
             type='radio'
             name='activityFactor'
             value={1.55}
@@ -304,7 +308,7 @@ function App() {
             ref={radioActivityFactor3}
           />
           <label>Moderate</label>
-          <input
+          <FormInput
             type='radio'
             name='activityFactor'
             value={1.725}
@@ -312,7 +316,7 @@ function App() {
             ref={radioActivityFactor4}
           />
           <label>Very</label>
-          <input
+          <FormInput
             type='radio'
             name='activityFactor'
             value={1.9}
@@ -325,7 +329,7 @@ function App() {
         {/* INPUTS FOR DAILY CALORIC GOALS */}
         <RadioGroup>
           <label>Weekly Goal:</label>
-          <input
+          <FormInput
             type='radio'
             name='weeklyGoal'
             value='lose'
@@ -333,7 +337,7 @@ function App() {
             ref={radioLoseGoal}
           />
           <label>Lose</label>
-          <input
+          <FormInput
             type='radio'
             name='weeklyGoal'
             value='maintain'
@@ -341,7 +345,7 @@ function App() {
             ref={radioMaintainGoal}
           />
           <label>Maintain</label>
-          <input
+          <FormInput
             type='radio'
             name='weeklyGoal'
             value='gain'
@@ -349,7 +353,7 @@ function App() {
             ref={radioGainGoal}
           />
           <label>Gain</label>
-          <input
+          <FormInput
             type='number'
             name='weeklyPounds'
             value={bodyMetrics.weeklyPounds}
@@ -363,35 +367,35 @@ function App() {
         </RadioGroup>
         <RadioGroup>
           <label>Macros:</label>
-          <input
+          <FormInput
             type='radio'
             name='macroRange'
             onChange={() => setMacroRange('balanced')}
             ref={radioBalanced}
           />
           <label>Balanced</label>
-          <input
+          <FormInput
             type='radio'
             name='macroRange'
             onChange={() => setMacroRange('low-fat')}
             ref={radioLowFat}
           />
           <label>↓ Fat</label>
-          <input
+          <FormInput
             type='radio'
             name='macroRange'
             onChange={() => setMacroRange('low-carb')}
             ref={radioLowCarb}
           />
           <label>↓ Carb</label>
-          <input
+          <FormInput
             type='radio'
             name='macroRange'
             onChange={() => setMacroRange('high-protien')}
             ref={radioHighProtien}
           />
           <label>↑ Protien</label>
-          <input
+          <FormInput
             type='radio'
             name='macroRange'
             onChange={() => setMacroRange('custom')}
@@ -400,9 +404,9 @@ function App() {
           <label>Custom</label>
         </RadioGroup>
         {/* RESET BUTTON */}
-        <button type='button' onClick={resetBodyMetrics}>
+        <FormButton type='button' onClick={resetBodyMetrics}>
           Reset
-        </button>
+        </FormButton>
       </BodyMetrics>
 
       <Formulas
